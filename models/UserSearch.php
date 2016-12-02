@@ -21,6 +21,9 @@ use yii\data\ActiveDataProvider;
  */
 class UserSearch extends Model
 {
+    /** @var integer */
+    public $id;
+
     /** @var string */
     public $username;
 
@@ -50,7 +53,7 @@ class UserSearch extends Model
     public function rules()
     {
         return [
-            'fieldsSafe' => [['username', 'email', 'registration_ip', 'created_at'], 'safe'],
+            'fieldsSafe' => [['id', 'username', 'email', 'registration_ip', 'created_at'], 'safe'],
             'createdDefault' => ['created_at', 'default', 'value' => null],
         ];
     }
@@ -59,6 +62,7 @@ class UserSearch extends Model
     public function attributeLabels()
     {
         return [
+            'id'              => Yii::t('user', 'ID'),
             'username'        => Yii::t('user', 'Username'),
             'email'           => Yii::t('user', 'Email'),
             'created_at'      => Yii::t('user', 'Registration time'),
@@ -82,6 +86,8 @@ class UserSearch extends Model
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
+
+        $query->andFilterWhere(['id' => $this->id]);
 
         if ($this->created_at !== null) {
             $date = strtotime($this->created_at);
